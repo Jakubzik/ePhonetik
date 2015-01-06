@@ -1,4 +1,0 @@
-ePhonetik
-=========
-
-Webapp für Transkriptionsübungen
