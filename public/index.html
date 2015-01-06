@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html ng-app="ePhonetik">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <title>Online Keyboard</title>
+    <link rel="stylesheet" type="text/css" href="css/ePhonetik.css" />
+</head>
+<body  ng-controller="LektionenController as vm">
+
+<!-- Einfacher alert()-Ersatz -->
+<div id="dialogoverlay" text-align="center"></div>
+<div id="dialogbox">
+<div>
+<div id="dialogboxhead"></div>
+<div id="dialogboxbody"></div>
+<div id="dialogboxfoot"></div>
+</div>
+</div>
+
+<!-- Start Hauptfunktion: Lektionen wählen und Fragen beantworten -->
+<h2>eTranscription</h2>
+<select id="cboLektionen" ng-model="selectedItem" ng-options="lektion.lektion.text for lektion in vm.lektionen">
+	<option value="">--please pick a lesson--</option>
+</select>
+
+<br /><br />
+<!-- "Frage m von n: Transkribieren Sie /Wort/" -->
+{{((selectedItem.lektion.fragen) ? 'Question ' + (vm.iFrage+1) + ' of ' + selectedItem.lektion.fragen.length + ': ' : '')}}<h3 ng-bind-html="selectedItem.lektion.fragen[vm.iFrage].text">selected: {{selectedItem.lektion.fragen[vm.iFrage].text}}</h3>
+
+<!-- T A S T A T U R -->
+<div id="container">
+    <textarea id="write" name="write">{{vm.userText}}</textarea>
+    <ul id="keyboard" ng-click="vm.type($event)">
+        <li class="letter">ɑ</li>
+        <li class="letter">a</li>
+        <li class="letter">æ</li>
+        <li class="letter">b</li>
+        <li class="letter">c</li>
+        <li class="letter">d</li>
+        <li class="letter">e</li>
+        <li class="letter">ə</li>
+        <li class="letter">ɜ</li>
+        <li class="letter">ɛ</li>
+        <li class="letter">f</li>
+        <li class="letter">g</li>
+        <li class="letter">h</li>
+        <li class="letter">i</li>
+        <li class="letter">ɪ</li>
+        <li class="letter">j</li>
+        <li class="letter">k</li>
+        <li class="letter">l</li>
+        <li class="letter">m</li>
+        <li class="letter">n</li>
+        <li class="letter">ŋ</li>
+        <li class="letter lastitem">o</li>
+        <li class="letter">ɒ</li>
+        <li class="letter">ɔ</li>
+        <li class="letter">p</li>
+        <li class="letter">q</li>
+        <li class="letter">r</li>
+        <li class="letter">s</li>
+        <li class="letter">ʃ</li>
+        <li class="letter">ʒ</li>
+        <li class="letter">t</li>
+        <li class="letter">θ</li>
+        <li class="letter">ð</li>
+        <li class="letter lastitem">u</li>
+        <li class="letter">ʊ</li>
+        <li class="letter">ʌ</li>
+        <li class="letter">v</li>
+        <li class="letter">w</li>
+        <li class="letter">x</li>
+        <li class="letter">y</li>
+        <li class="letter">z</li>
+        <li class="letter">ː</li>
+        <li class="letter">ˈ</li>
+        <li class="letter">ˌ</li>
+        <li class="delete lastitem">[delete]</li>
+        <li class="return lastitem">[submit]</li>
+        <li class="space lastitem">[space]</li>
+    </ul>
+</div>
+<!-- E N D E   T A S T A T U R -->
+
+<!-- Bibliotheken -->
+<script src="js/IndexedDBShim.min.js"></script><!-- Polyfill für IndexedDB -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular-sanitize.js"></script><!-- Sanitizer zur interpretierten Anzeige von HTML -->
+
+<!-- ePhonetik Skripte -->
+<script type="text/javascript" src="js/core.js"></script>
+<script type="text/javascript" src="js/controllers/main.js"></script>
+<script type="text/javascript" src="js/services/service.js"></script>
+
+<script>
+/**
+ * Einfacher Alert Aufhübscher
+ **/
+function PhonetikAlert(){
+	// Optional: oOptionen
+	//				.header
+	this.render = function(dialog, oOptionen){
+		oOptionen=oOptionen || {};
+		oOptionen.head = typeof oOptionen.head !== 'undefined' ?  oOptionen.head : '!';
+		var dialogoverlay = document.getElementById('dialogoverlay');
+	    var dialogbox = document.getElementById('dialogbox');
+		dialogoverlay.style.display = "block";
+	    dialogoverlay.style.height = window.innerWidth+"px";
+		dialogbox.style.left = (window.innerWidth/2) - 75 + "px";
+	    dialogbox.style.top = "100px";
+	    dialogbox.style.display = "block";
+		document.getElementById('dialogboxhead').innerHTML = ((oOptionen && oOptionen.head) ? oOptionen.head : "!");
+	    document.getElementById('dialogboxbody').innerHTML = dialog;
+		document.getElementById('dialogboxfoot').innerHTML = '<div width="100%" background-color="#fcfc" onclick="Alert.ok()">   OK   </div>';
+	}
+	this.ok = function(){
+		document.getElementById('dialogbox').style.display = "none";
+		document.getElementById('dialogoverlay').style.display = "none";
+	}
+}
+var Alert = new PhonetikAlert();
+</script>
+</body>
+</html>
