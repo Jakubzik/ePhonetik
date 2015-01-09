@@ -1,4 +1,5 @@
 var Lektion 	= require('./models/lektion');
+var Frage 	= require('./models/frage');
 var EPhonetik	= require('./models/ePhonetik');
 
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -51,7 +52,13 @@ function deleteLektion(req, res){
  * Der Parameter "iLektion" ist tot.
  */
 function updateFrage(req, res){
-	Lektion.updateFrage(req.body, function(err, oResponse) {
+	Frage.update(req.body, function(err, oResponse) {
+			if (err) res.send(err);
+			res.json(oResponse);
+	});
+};
+function addFrage(req, res){
+	Frage.add(req.body, function(err, oResponse) {
 			if (err) res.send(err);
 			res.json(oResponse);
 	});
@@ -102,12 +109,12 @@ module.exports = function(app) {
 	
 	// --------------------------------------
 	// Lifecycle FRAGE ++++++++++++++++++++
-	app.put('/api/lektion', function(req, res) {
-
-		// use mongoose to get all todos in the database
+	app.put('/api/frage', function(req, res) {
 		updateFrage(req, res);
 	});
-
+	app.post('/api/frage', function(req, res) {
+		addFrage(req, res);
+	});
 	// --------------------------------------
 	// Lifecycle ANTWORT ++++++++++++++++++++
 

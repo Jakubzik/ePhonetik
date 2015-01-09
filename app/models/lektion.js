@@ -168,29 +168,6 @@ function drop(oLektion, fSuccess){
 	});
 }
 
-// @TODO: muss in frage.js ausgelagert werden, s.a. routes.js
-function updateFrage(oFrage, fSuccess){
-	
-	// =======================================
-	// Schnittstelle
-	if(!oFrage.id) fSuccess({"message":"Die übergebene Frage >" + oFrage + "< hat keine >id<. Die Frage kann \
-		leider nicht geändert werden."}, undefined);
-
-	if(!oFrage.text) fSuccess({"message":"Die übergebene Frage hat keinen >text<. Die Frage kann \
-		leider nicht geändert werden."}, undefined);
-			
-	var client = new pg.Client(dbConnection.connString);
-	var oReturn={};
-	var tmpFrageID=-1;
-	client.connect(function(err) {
-		client.query('update "tblSdFrage" set "strFrageText"=$1 where "lngFrageID"=$2;', [oFrage.text,oFrage.id], function(err, result) {
-			if(result.rowCount !== 1) err={"message":"Es wurden " + result.rowCount + " Zeilen geändert ... erwartet wurde das Update einer einzigen Zeile"};
-			fSuccess(err,result);
-		});
-	});
-}
-
 module.exports.load = load;
 module.exports.drop = drop;
 module.exports.add = add;
-module.exports.updateFrage = updateFrage;
