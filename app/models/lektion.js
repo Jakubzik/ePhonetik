@@ -1,5 +1,5 @@
 var dbConnection = require('../../config/database');
-var pg = require('/home/heiko/npm/node_modules/pg');
+var pg = require('pg');
 
 /**
  * Objektrelationales Mapping:

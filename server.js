@@ -1,10 +1,10 @@
 // set up ======================================================================
 var express  = require('express');
-var app      = express(); 								// create our app w/ express
-var port  	 = process.env.PORT || 8080; 				// set the port
-var dbConnection = require('./config/database'); 			// load the database config
+var app      = express(); 								
+var port  	 = process.env.PORT || 8080; 				
+var dbConnection = require('./config/database'); 		
 var morgan   = require('morgan');
-var pg = require('/home/heiko/npm/node_modules/pg');			// <- TODO: das besser als npm Modul
+var pg = require('pg');			
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 

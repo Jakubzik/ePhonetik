@@ -4,7 +4,20 @@
   "description"  : "Simple transcription elearning application.",
   "main"         : "server.js",
   "author"       : "shj -- Heiko Jakubzik",
+  "homepage"	 : "https://github.com/Jakubzik/ePhonetik",
+  "bug"			 : {
+					"url" : "https://github.com/Jakubzik/ePhonetik/issues",
+					"email" : "info@shj-online.de?project=ePhonetik"
+				 },
+  "repository"   : { 
+					"type" : "git",
+					"url" : "https://github.com/Jakubzik/ePhonetik"
+				  },
+  "scripts"		 : {
+					"postinstall" : "./init-ePhonetik-db.sh"
+					},
   "dependencies" : {
+    "pg"	      : "~4.1.0",
     "express"         : "~4.6.1",
     "morgan"          : "~1.1.1",
     "body-parser"     : "~1.4.3",
