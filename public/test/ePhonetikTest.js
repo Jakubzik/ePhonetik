@@ -224,6 +224,7 @@ describe("Lifecycle Frage", function() {
 					 console.log("Füge neue Frage zu Lektion 0 hinzu...Antwort:");
 					 console.log(data);
 					 console.log(data.rows[0].lngFrageID);
+					 g_iNeueFrageID=data.rows[0].lngFrageID;
 					 console.log("\n\n");
 				 }
                 expect(data.rowCount).to.equal(1);
@@ -232,9 +233,6 @@ describe("Lifecycle Frage", function() {
         });
     });
     
-    // TODO:
-    // Löschen. Falls lektion_id übergeben, wird nur die Zuordnung gelöscht;
-    // falls nicht, wird die Frage mit all ihren Zuordnungen gelöscht.
     it("Lösche neue Frage wieder...", function (done) {
 		var oFrageOrig=lektionen[0].fragen[0];
 		
@@ -242,6 +240,7 @@ describe("Lifecycle Frage", function() {
 		oFrageNeu.lektion_id=lektionen[0].id;
 		oFrageNeu.text='Frage von automatischer Testfunktion.';
 		oFrageNeu.sequence=10000;
+		oFrageNeu.id=g_iNeueFrageID;
 		 
         $.ajax({
             data: oFrageNeu,
@@ -251,6 +250,63 @@ describe("Lifecycle Frage", function() {
             success: function(data){
                 if(g_bLogDetailsToConsole){
 					 console.log("Lösche neue Frage wieder...Antwort:");
+					 console.log(data);
+					 console.log("\n\n");
+				 }
+                expect(data.rowCount).to.equal(1);
+                done();
+            }
+        });
+    });
+});
+
+describe("Lifecycle Antwort", function() {
+    
+    it("Antwort 0 aus Frage 0 aus Lektion 0 wird geändert...", function (done) {
+		var oAntwortOrig=lektionen[0].fragen[0].antworten[0];
+		oAntwortOrig.frage_id=lektionen[0].fragen[0].id;
+		var sTextOrig=oAntwortOrig.text;
+		console.log(sTextOrig);
+		oAntwortOrig.text='Durch Test geändert: öäüß';
+
+		if(g_bLogDetailsToConsole){
+			 console.log("Antwort (0,0,0) wird geändert ... ediere Antwort '" + sTextOrig + "'");
+		}
+		 
+        $.ajax({
+            data: oAntwortOrig,
+            type:'PUT',
+            dataType:'json',
+            url: '../api/antwort',
+            success: function(data){
+                if(g_bLogDetailsToConsole){
+					 console.log("Antwort (0,0,0) ... Änderung der Frage bringt diese Antwort:");
+					 console.log(data);
+					 console.log("\n\n");
+				 }
+                expect(data.rowCount).to.equal(1);
+                // undo
+                oAntwortOrig.text=sTextOrig;
+                done();
+            }
+        });
+    });
+    
+    it("Antwort (0,0,0) wird wiederhergestellt...", function (done) {
+		var oAntwortOrig=lektionen[0].fragen[0].antworten[0];
+		oAntwortOrig.frage_id=lektionen[0].fragen[0].id;
+		if(g_bLogDetailsToConsole){
+			 console.log("Antwort (0,0,0) wird wiederhergestellt... setze Antwort auf '" + oAntwortOrig.text + "'");
+		}
+		 
+        $.ajax({
+            data: oAntwortOrig,
+            type:'PUT',
+            dataType:'json',
+            url: '../api/antwort',
+            success: function(data){
+                if(g_bLogDetailsToConsole){
+					 console.log("Antwort (0,0,0) wird wiederhergestellt ... Änderung der Antwort bringt diese Response:");
 					 console.log(data);
 					 console.log("\n\n");
 				 }

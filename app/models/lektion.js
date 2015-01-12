@@ -2,10 +2,12 @@ var dbConnection = require('../../config/database');
 var pg = require('pg');
 
 /**
+ * @desc Lädt die Lektionen mit Fragen und Antworten
+ * 
+ * @return 
  * Objektrelationales Mapping:
  * tblLektion ¹ - n tblFrage ¹ - n tblAntwort
  * 
- * -->
  * [
  *   lektion (id, text, sequence, 
  * 		fragen [
@@ -15,6 +17,8 @@ var pg = require('pg');
  * 					])
  * 		])
  * ]
+ * 
+ * @param fSuccess, wird als fSuccess (err,result) aufgerufen. Details zum result s.o.
  * 
  **/
 function load(fSuccess){
@@ -90,6 +94,7 @@ function load(fSuccess){
 }
 
 /**
+ * @descr
  * Füge neue Lektion in die Datenbank ein (noch 
  * ohne Fragen und Antworten):
  * .bezeichnung
@@ -99,6 +104,9 @@ function load(fSuccess){
  * Die LektionID wird automatisch ermittelt (fort-
  * laufend) und als Rückgabewert "lngLektionID" 
  * geliefert (.rows[0].lngLektionID).
+ * 
+ * @param {object} oLektion mit .bezeichnung, .beschreibung und .sequence.
+ * @param fSuccess, wird als fSuccess(err,result) aufgerufen; result.rows[0].lngLektionID enthält die ID der neuen Lektion
  */ 
 function add(oLektion, fSuccess){
 	
@@ -127,8 +135,11 @@ function add(oLektion, fSuccess){
 };
 
 /**
- * Ändere Bezeichnung, Beschreibung oder Sequence der Lektion 
+ * @descr
+ * Ändert Bezeichnung, Beschreibung oder Sequence der Lektion 
  * (die anhand von oLektion.id identifiziert wird).
+ * @param {object} oLektion mit .id, .bezeichnung, .beschreibung, sequence
+ * @param {function} fSuccess wird mit (err, result) aufgerufen.
  */ 
 function update(oLektion, fSuccess){
 	
@@ -137,6 +148,9 @@ function update(oLektion, fSuccess){
 	if(!oLektion.id || isNaN(oLektion.id)) fSuccess({"message":"Die übergebene Lektions-ID >" + oLektion.id + "< ist nicht numerisch. Die Lektion kann \
 		leider nicht geändert werden."}, undefined);
 			
+	if(!oLektion.sequence || isNaN(oLektion.sequence)) fSuccess({"message":"Die übergebene sequence >" + oLektion.sequence + "< ist nicht numerisch. Die Lektion kann \
+		leider nicht geändert werden."}, undefined);
+		
 	var client = new pg.Client(dbConnection.connString);
 	client.connect(function(err) {
 		client.query('UPDATE "tblSdLektion" \
@@ -149,8 +163,12 @@ function update(oLektion, fSuccess){
 };
 
 /**
+ * @desc
  * Lösche die übergebene Lektion aus der Datenbank 
  * (Relevant ist nur oLektion.id).
+ * 
+ * @param {object} oLektion mit oLektion.id <integer>
+ * @param {function} fSuccess wird als fSuccess (err, result) aufgerufen.
  */ 
 function drop(oLektion, fSuccess){
 	// =======================================

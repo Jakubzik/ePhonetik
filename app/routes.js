@@ -1,5 +1,6 @@
 var Lektion 	= require('./models/lektion');
 var Frage 	= require('./models/frage');
+var Antwort 	= require('./models/antwort');
 var EPhonetik	= require('./models/ePhonetik');
 
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -63,10 +64,23 @@ function addFrage(req, res){
 			res.json(oResponse);
 	});
 };
+function deleteFrage(req, res){
+	Frage.drop(req.body, function(err, oResponse) {
+			if (err) res.send(err);
+			res.json(oResponse);
+	});
+};
 function getEPhonetikVersion(res){
 	EPhonetik.version(function(err, oAppInfo) {
 			if (err) res.send(err)
 			res.json(oAppInfo);
+	});
+};
+
+function updateAntwort(req, res){
+	Antwort.update(req.body, function(err, oResponse) {
+			if (err) res.send(err);
+			res.json(oResponse);
 	});
 };
 
@@ -115,9 +129,15 @@ module.exports = function(app) {
 	app.post('/api/frage', function(req, res) {
 		addFrage(req, res);
 	});
+	app.delete('/api/frage', function(req, res) {
+		deleteFrage(req, res);
+	});
+	
 	// --------------------------------------
 	// Lifecycle ANTWORT ++++++++++++++++++++
-
+	app.put('/api/antwort', function(req, res) {
+		updateAntwort(req, res);
+	});
 	// --------------------------------------
 	// DEFAULT
 

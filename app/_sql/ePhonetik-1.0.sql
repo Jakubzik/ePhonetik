@@ -19,9 +19,6 @@ SET client_min_messages = warning;
 
 CREATE DATABASE "ePhonetik" WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'de_DE.UTF-8' LC_CTYPE = 'de_DE.UTF-8';
 
-
-ALTER DATABASE "ePhonetik" OWNER TO "heiko";
-
 \connect "ePhonetik"
 
 SET statement_timeout = 0;

@@ -2,22 +2,23 @@ var dbConnection = require('../../config/database');
 var pg = require('pg');
 
 /**
- * @desc Ändert den Text der Frage in der Datenbank
+ * @desc Ändert den Text der Antwort in der Datenbank
  * des Backends.
- * 
- * @param {object} oFrage. oFrage hat die Eigenschaften .id sowie .text
- * @param {function} fSuccess. fSuccess wird aufgerufen mit .err,result
- * @return per fSuccess: entweder err mit .message, oder result mit .rowCount.
+ * @param {object} oAntwort. oAntwort hat die Eigenschaften frage_id, .id, .text, optional auch: .korrekt <boolean>
+ * @param {function} fSuccess. fSuccess wird aufgerufen als fSuccess(err,result)
  **/
-function update(oFrage, fSuccess){
+function update(oAntwort, fSuccess){
 	
 	// =======================================
 	// Schnittstelle
-	if(!oFrage.id) fSuccess({"message":"Die übergebene Frage >" + oFrage + "< hat keine >id<. Die Frage kann \
-		leider nicht geändert werden."}, undefined);
+	if(!oAntwort.id || isNaN(oAntwort.id)) {fSuccess({"message":"Die übergebene Antwort hat keine >id<. Die Antwort kann \
+		leider nicht geändert werden."}, undefined);return};
 
-	if(!oFrage.text) fSuccess({"message":"Die übergebene Frage hat keinen >text<. Die Frage kann \
-		leider nicht geändert werden."}, undefined);
+	if(!oAntwort.frage_id || isNaN(oAntwort.frage_id)) {fSuccess({"message":"Die übergebene Antwort hat keine >frage_id<. Die Antwort kann \
+		leider nicht geändert werden."}, undefined);return};
+
+	if(!oAntwort.text) {fSuccess({"message":"Die übergebene Antwort hat keinen >text<. Die Antwort kann \
+		leider nicht geändert werden."}, undefined);return};
 	
 	// =======================================
 	// Update an Datenbank absetzen.
@@ -25,10 +26,18 @@ function update(oFrage, fSuccess){
 	var oReturn={};
 	var tmpFrageID=-1;
 	client.connect(function(err) {
-		client.query('update "tblSdFrage" set "strFrageText"=$1 where "lngFrageID"=$2;', [oFrage.text,oFrage.id], function(err, result) {
-			if(result.rowCount !== 1) err={"message":"Es wurden " + result.rowCount + " Zeilen geändert ... erwartet wurde das Update einer einzigen Zeile"};
-			fSuccess(err,result);
-		});
+		if(oAntwort.korrekt && (oAntwort.korrekt===true ||oAntwort.korrekt===false)){
+			client.query('update "tblSdAntwort" set "strAntwortText"=$1, "blnAntwortKorrekt"=$2 where "lngAntwortID"=$3 and "lngFrageID"=$4;', [oAntwort.text,oAntwort.korrekt,oAntwort.id,oAntwort.frage_id], function(err, result) {
+				if(result.rowCount !== 1) err={"message":"Es wurden " + result.rowCount + " Zeilen geändert ... erwartet wurde das Update einer einzigen Zeile"};
+				fSuccess(err,result);
+			});
+
+		}else{
+			client.query('update "tblSdAntwort" set "strAntwortText"=$1 where "lngAntwortID"=$2 and "lngFrageID"=$3;', [oAntwort.text,oAntwort.id,oAntwort.frage_id], function(err, result) {
+				if(result.rowCount !== 1) err={"message":"Es wurden " + result.rowCount + " Zeilen geändert ... erwartet wurde das Update einer einzigen Zeile"};
+				fSuccess(err,result);
+			});
+		}
 	});
 }
 
@@ -50,7 +59,7 @@ function update(oFrage, fSuccess){
  * @return per fSuccess mit err.message bzw. der ID der 
  * 			neu erzeugten Frage in result.rows[0].lngFrageID.
  **/
-function add(oFrageXLektion, fSuccess){
+function TODOadd(oFrageXLektion, fSuccess){
 	
 	// =======================================
 	// Schnittstelle
@@ -112,7 +121,7 @@ function add(oFrageXLektion, fSuccess){
  * @param {function} fSuccess. fSuccess wird aufgerufen mit .err,result
  * @return per fSuccess mit err.message bzw. result.rowCount.
  **/
-function drop(oFrage, fSuccess){
+function TODOdrop(oFrage, fSuccess){
 	
 	// =======================================
 	// Schnittstelle
@@ -153,6 +162,6 @@ function drop(oFrage, fSuccess){
 	});
 };
 
-module.exports.drop = drop;
+//module.exports.drop = drop;
 module.exports.update = update;
-module.exports.add = add;
+//module.exports.add = add;
